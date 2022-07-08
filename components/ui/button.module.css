@@ -12,6 +12,14 @@
   transition: all 0.3s;
 }
 
+/* .btn {
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  background-color: #03be9f;
+  border-radius: 20px;
+} */
+
 .btn:hover,
 .btn:active {
   background-color: #02afa1;
