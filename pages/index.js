@@ -1,14 +1,26 @@
-import { getFeaturedEvents } from "../dummy-data";
-import EventList from "../components/events/event-list";
+import path from "path";
+import fs from "fs/promises";
 
-function Home() {
-  const featuredEvents = getFeaturedEvents();
-
+function Home(props) {
+  const { products } = props;
   return (
-    <div>
-      <EventList items={featuredEvents} />
-    </div>
+    <ul>
+      {products.map((item) => (
+        <li key={item.id}> {item.title}</li>
+      ))}
+    </ul>
   );
 }
 
+export async function getStaticProps() {
+  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData);
+
+  return {
+    props: {
+      products: data.products,
+    },
+  };
+}
 export default Home;
