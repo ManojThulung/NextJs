@@ -5,6 +5,11 @@ import { Fragment } from "react";
 function ProductDetail(props) {
   const { productData } = props;
 
+  // if data fetching is late.
+  //   if (!productData) {
+  //     return <div>Loading...</div>;
+  //   }
+
   return (
     <Fragment>
       <h1>{productData.title}</h1>
@@ -33,12 +38,11 @@ export async function getStaticProps(context) {
 // Since this page is for a concrete url, is requires another function
 export async function getStaticPaths() {
   return {
-    paths: [
-      { params: { pid: "p1" } },
-      { params: { pid: "p2" } },
-      { params: { pid: "p3" } },
-    ],
-    fallback: false, // fallback key will be helpful if there is lot of pages that need to be regerenated.
+    paths: [{ params: { pid: "p1" } }],
+    // fallback key will be helpful if there is lot of pages that need to be regerenated.
+    // fallback: true, // This will allow Just in time data fetch. also requires return condition in the component function.
+    fallback: "blocking", //unlike above true, this will only redirect to the page after the data is responede.
+    // Hence 'blocking' do not requires any return condition.
   };
 }
 
