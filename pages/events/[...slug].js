@@ -22,7 +22,6 @@ function FilterEvent(props) {
     "https://nextjs-co-13230-default-rtdb.firebaseio.com/events.json",
     fetcher
   );
-  console.log(data);
 
   useEffect(() => {
     const transformedData = [];
@@ -33,8 +32,6 @@ function FilterEvent(props) {
         ...data[key],
       });
     }
-
-    console.log(transformedData);
 
     setLoadedEvent(transformedData);
   }, [data]);
@@ -95,6 +92,7 @@ function FilterEvent(props) {
   }
 
   const date = new Date(numYear, numMonth - 1);
+
   return (
     <Fragment>
       <ResultTitle date={date} />
