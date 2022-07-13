@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-// import { getFilteredEvents } from "../../helpers/api-util";
+import Head from "next/head";
+// import { getFilteredEvents } from "../../helpers/api-util"; //this is for server-side rendering
 
 import EventList from "../../components/events/event-list";
 import ResultTitle from "../../components/events/result-title";
@@ -38,9 +39,10 @@ function FilterEvent(props) {
 
   if (!loadedEvent || !filteredDate) {
     return (
-      <div className="center">
-        <h1>Loading....</h1>
-      </div>
+      <Fragment>
+        <HeaderData />
+        <h1 className="center">Loading....</h1>
+      </Fragment>
     );
   }
 
@@ -60,6 +62,7 @@ function FilterEvent(props) {
   ) {
     return (
       <Fragment>
+        <HeaderData />
         <ErrorAlert>
           <p>The filter data is invalid. Please use valid data</p>
         </ErrorAlert>
@@ -81,6 +84,7 @@ function FilterEvent(props) {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        <HeaderData />
         <ErrorAlert>
           <p>No Events are found.</p>
         </ErrorAlert>
@@ -95,6 +99,7 @@ function FilterEvent(props) {
 
   return (
     <Fragment>
+      <HeaderData />
       <ResultTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
@@ -102,6 +107,15 @@ function FilterEvent(props) {
 }
 
 export default FilterEvent;
+
+function HeaderData(props) {
+  return (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content={`All the filtered Events.`} />
+    </Head>
+  );
+}
 
 // for server side rendering
 // export async function getServerSideProps(context) {
