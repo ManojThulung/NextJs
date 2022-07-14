@@ -1,7 +1,9 @@
 import Head from "next/head";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 function Home(props) {
+  const [feedbackList, setFeedbackList] = useState([]);
+
   const emailInputRef = useRef();
   const feedbackInputRef = useRef();
 
@@ -11,6 +13,7 @@ function Home(props) {
     const enteredEmail = emailInputRef.current.value;
     const enteredFeedback = feedbackInputRef.current.value;
 
+    // Post request to store data in feedback.json
     fetch("/api/feedback", {
       method: "POST",
       body: JSON.stringify({ email: enteredEmail, feedback: enteredFeedback }),
@@ -21,6 +24,17 @@ function Home(props) {
       .then((response) => response.json())
       .then((data) => console.log(data));
   }
+
+  function feedbackDiplayHandler() {
+    // GET request to get data of feedback.json
+    fetch("/api/feedback")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackList(data.feedback);
+        console.log(data);
+      });
+  }
+
   return (
     <div>
       <Head>
@@ -43,6 +57,16 @@ function Home(props) {
         </div>
         <button>Submit feedback</button>
       </form>
+      <hr />
+      <button onClick={feedbackDiplayHandler}>Show Feedback</button>
+      <ul>
+        {feedbackList.map((list) => (
+          <>
+            <li>{list.email}</li>
+            <li>{list.feedback}</li>
+          </>
+        ))}
+      </ul>
     </div>
   );
 }
