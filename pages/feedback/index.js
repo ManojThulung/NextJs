@@ -1,13 +1,30 @@
+import { Fragment, useState } from "react";
 import { findPath, readFileData } from "../api/feedback";
 
 function Feedback(props) {
+  const [selectedFeedback, setSelectedFeedback] = useState();
+  function viewDetailHandler(id) {
+    fetch(`/api/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setSelectedFeedback(data.feedback);
+      });
+  }
   console.log(props.feedbackList);
   return (
-    <ul>
-      {props.feedbackList.map((list) => (
-        <li key={list.id}>{list.feedback}</li>
-      ))}
-    </ul>
+    <Fragment>
+      {selectedFeedback && <p>{selectedFeedback.email}</p>}
+      <ul>
+        {props.feedbackList.map((list) => (
+          <li key={list.id}>
+            {list.feedback}{" "}
+            <button onClick={viewDetailHandler.bind(null, list.id)}>
+              View Detail
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Fragment>
   );
 }
 
