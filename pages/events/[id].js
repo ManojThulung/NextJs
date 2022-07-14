@@ -5,6 +5,7 @@ import { getEventById, getFeaturedEvents } from "../../helpers/api-util";
 import EventSummary from "../../components/event-details/event-summary";
 import EventContent from "../../components/event-details/event-content";
 import EventLogistics from "../../components/event-details/event-logistics";
+import Comments from "../../components/input/comments";
 
 function Eventid(props) {
   const event = props.selectedEvent;
@@ -33,6 +34,7 @@ function Eventid(props) {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      <Comments eventId={event.id} />
     </Fragment>
   );
 }
