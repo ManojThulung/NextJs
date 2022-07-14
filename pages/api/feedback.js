@@ -1,11 +1,11 @@
 import fs from "fs";
 import path from "path";
 
-function findPath() {
+export function findPath() {
   return path.join(process.cwd(), "data", "feedback.json"); //takes the file path where the data is to be store
 }
 
-function readFileData(filePath) {
+export function readFileData(filePath) {
   const fileData = fs.readFileSync(filePath); //read the data of that file
   const data = JSON.parse(fileData); //store the read data to array
   return data;
