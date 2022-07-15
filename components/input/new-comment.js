@@ -5,6 +5,7 @@ function NewComment(props) {
   const [isInvalid, setIsInvalid] = useState(false);
 
   const emailInputRef = useRef();
+  const nameInputRef = useRef();
   const commentInputRef = useRef();
 
   function sendCommentHandler(event) {
@@ -25,8 +26,10 @@ function NewComment(props) {
       return;
     }
 
+    //This is a function which is called in comments.js as addCommenthandler(commentData)
     props.onAddComment({
       email: enteredEmail,
+      name: enteredName,
       text: enteredComment,
     });
   }
@@ -36,19 +39,19 @@ function NewComment(props) {
       <div className={classes.row}>
         <div className={classes.control}>
           <label htmlFor="email">Your email</label>
-          <input type="email" id="email" />
+          <input type="email" id="email" ref={emailInputRef} />
         </div>
         <div className={classes.control}>
           <label htmlFor="name">Your name</label>
-          <input type="text" id="name" />
+          <input type="text" id="name" ref={nameInputRef} />
         </div>
       </div>
       <div className={classes.control}>
         <label htmlFor="comment">Your comment</label>
-        <textarea id="comment" rows="5"></textarea>
+        <textarea id="comment" rows="5" ref={commentInputRef}></textarea>
       </div>
       {isInvalid && <p>Please enter a valid email address and comment!</p>}
-      <button>Submit</button>
+      <button onClick={sendCommentHandler}>Submit</button>
     </form>
   );
 }
