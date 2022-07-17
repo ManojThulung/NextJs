@@ -1,16 +1,21 @@
-import { MongoClient } from "mongodb";
+import {
+  connectDatabase,
+  insertDocument,
+  getAllComments,
+} from "../../../helpers/db-util";
 
 async function handler(req, res) {
   const eventId = req.query.eventId; //stores dynamic value of url.
 
+  let client;
+  let result;
   //creates connect with the mongodb.
-  const client = await MongoClient.connect(
-    "mongodb+srv://manojthulung:thulungmanoj@cluster0.ewaqcmh.mongodb.net/?retryWrites=true&w=majority"
-  );
-
-  // connects with the database in mongodb
-  const dbName = "next-event-app";
-  const db = client.db(dbName);
+  try {
+    client = await connectDatabase();
+  } catch (error) {
+    res.status(500).json({ message: "database connection failed." });
+    return;
+  }
 
   if (req.method === "POST") {
     const { email, name, text } = req.body;
@@ -24,6 +29,7 @@ async function handler(req, res) {
       text.trim() === ""
     ) {
       res.status(422).json({ message: "Invalid input." });
+      client.close();
       return;
     }
 
@@ -35,21 +41,26 @@ async function handler(req, res) {
     };
 
     // inserting data in the comments collection.
-    const result = await db.collection("comments").insertOne(newComment);
-    console.log(result);
+    try {
+      result = await insertDocument(client, "comments", newComment);
+      newComment._id = result.insertedId;
 
-    res.status(200).json({ message: "POST request successful" });
+      res.status(200).json({ message: "POST request successful" });
+    } catch (error) {
+      res.status(500).json({ message: "Data insertion failed." });
+    }
   }
 
   if (req.method === "GET") {
-    const commentsList = await db
-      .collection("comments")
-      .find()
-      .sort({ _id: -1 }) //_id is the key inside the object and -1 is the sort in descending order.
-      .toArray();
-
-    res.status(200).json({ comments: commentsList });
+    try {
+      result = await getAllComments(client, "comments", { _id: -1 });
+      res.status(200).json({ comments: result });
+    } catch (error) {
+      res.status(500).json({ message: "failed to load comments" });
+    }
   }
+
+  client.close();
 }
 
 export default handler;

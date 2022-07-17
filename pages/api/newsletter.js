@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { connectDatabase, insertDocument } from "../../helpers/db-util";
 
 async function handler(req, res) {
   if (req.method === "POST") {
@@ -11,16 +12,21 @@ async function handler(req, res) {
       return;
     }
 
-    // Connection with MongoDB
-    const client = await MongoClient.connect(
-      "mongodb+srv://manojthulung:thulungmanoj@cluster0.ewaqcmh.mongodb.net/?retryWrites=true&w=majority"
-    );
+    let client;
+    try {
+      client = await connectDatabase();
+    } catch (error) {
+      res.status(500).json({ message: "Database connection failed." });
+      return;
+    }
 
-    const dbName = "next-event-app";
-    const db = client.db(dbName);
-    await db.collection("emails").insertOne({ email: userEmail });
-
-    res.status(201).json({ message: "Registration successful" }); //status(201) request successful
+    try {
+      await insertDocument(client, "emails", { email: userEmail });
+      res.status(201).json({ message: "Registration successful" }); //status(201) request successful
+    } catch (error) {
+      res.status(500).json({ message: "Inserting data failed." });
+    }
+    client.close();
   }
 }
 
